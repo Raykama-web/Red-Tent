@@ -212,92 +212,52 @@ body{
     знаний и поддержки в кругу единомышленниц.
   </div>
 
-  <!-- ================= УСЛУГИ ================= -->
-<div class="music-box" onclick="toggleServices()">
-  Наши Услуги
+  <div class="music-box" onclick="toggleServices()">
+  Наши услуги
   <span id="services-arrow" class="music-arrow">▼</span>
 </div>
 
 <div id="services-list" class="music-list">
   <div class="service-section">
     <div class="service-title" onclick="toggleSubsection('yoga')">Раздел: Йога</div>
-    <div id="yoga" class="subsection">
-      дададчбчдлв
-    </div>
+    <div id="yoga" class="subsection">дададчбчдлв</div>
   </div>
   <div class="service-section">
     <div class="service-title" onclick="toggleSubsection('astro')">Раздел: Астрология</div>
-    <div id="astro" class="subsection">
-      <!-- Здесь текст Астрологии -->
-    </div>
+    <div id="astro" class="subsection">Астрология текст</div>
   </div>
   <div class="service-section">
     <div class="service-title" onclick="toggleSubsection('coaching')">Раздел: Коучинг</div>
-    <div id="coaching" class="subsection">
-      <!-- Здесь текст Коучинга -->
-    </div>
+    <div id="coaching" class="subsection">Коучинг текст</div>
   </div>
   <div class="service-section">
     <div class="service-title" onclick="toggleSubsection('games')">Раздел: Игры</div>
-    <div id="games" class="subsection">
-      <!-- Здесь текст Игры -->
-    </div>
+    <div id="games" class="subsection">Игры текст</div>
   </div>
 </div>
 
 <style>
-/* Секция услуг */
-.service-section {
-  border-top: 2px solid rgba(255,238,220,0.5);
-  padding: 8px 0;
-}
-.service-title {
-  font-weight: 700;
-  font-size: 16px;
-  cursor: pointer;
-  color: #ffeedd;
-  padding: 4px 0;
-}
-.subsection {
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: max-height 0.4s ease, opacity 0.4s ease;
-  padding-left: 12px;
-  margin-top: 4px;
-  color: #ffeedd;
-}
-.subsection.open {
-  max-height: 500px; 
-  opacity: 1;
-}
+.service-section{border-top:2px solid rgba(255,238,220,0.5);padding:8px 0}
+.service-title{font-weight:700;font-size:16px;cursor:pointer;color:#ffeedd;padding:4px 0;transition:0.25s}
+.service-title:hover{color:#fff}
+.subsection{max-height:0;opacity:0;overflow:hidden;padding-left:12px;margin-top:4px;color:#ffeedd;transition:max-height 0.5s ease,opacity 0.5s ease;font-weight:300;font-style:italic}
+.subsection.open{max-height:500px;opacity:1}
+.music-list.open{max-height:1000px;opacity:1;transition:max-height 0.6s ease,opacity 0.6s ease}
 </style>
 
 <script>
 function toggleServices(){
-  const list = document.getElementById('services-list');
-  const arrow = document.getElementById('services-arrow');
-  const isOpen = list.classList.contains('open');
-
-  if(isOpen){
-    list.classList.remove('open');
-    arrow.classList.remove('open');
-  } else {
-    list.classList.add('open');
-    arrow.classList.add('open');
-  }
+  const list=document.getElementById('services-list')
+  const arrow=document.getElementById('services-arrow')
+  const isOpen=list.classList.contains('open')
+  if(isOpen){list.classList.remove('open');arrow.classList.remove('open')}
+  else{list.classList.add('open');arrow.classList.add('open')}
 }
-
 function toggleSubsection(id){
-  const el = document.getElementById(id);
-  const isOpen = el.classList.contains('open');
-
-  // 
-  document.querySelectorAll('.subsection').forEach(s => s.classList.remove('open'));
-
-  if(!isOpen){
-    el.classList.add('open');
-  }
+  const el=document.getElementById(id)
+  const isOpen=el.classList.contains('open')
+  document.querySelectorAll('.subsection').forEach(s=>s.classList.remove('open'))
+  if(!isOpen){el.classList.add('open')}
 }
 </script>
 

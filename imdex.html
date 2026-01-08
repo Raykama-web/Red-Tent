@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>The Red Tent — Women Space</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Playfair+Display:ital,wght@1,600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --red-main: rgb(155,33,47);
+  --red-dark: rgb(84,21,24);
+  --text-light:#f8eaea;
+  --btn-bg: rgb(255,238,220);
+  --btn-text: rgb(84,21,24);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+
+body{
+  min-height:100vh;
+  font-family:Inter,system-ui;
+  color:var(--text-light);
+  background:linear-gradient(160deg,var(--red-main),var(--red-dark));
+  background-size:200% 200%;
+  animation:bgFlow 14s ease infinite;
+  display:flex;
+  justify-content:center;
+}
+
+@keyframes bgFlow{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+.container{
+  width:100%;
+  max-width:900px;
+  padding:60px 24px 80px;
+  text-align:center;
+}
+
+/* AVATAR */
+.avatar-area{
+  position:relative;
+  display:flex;
+  justify-content:center;
+  margin-bottom:30px;
+}
+
+.avatar{
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  overflow:hidden;
+  position:relative;
+  z-index:2;
+  box-shadow:0 0 60px rgba(255,120,130,.25);
+}
+
+.avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* LIGHT RAY */
+.light-ray{
+  position:absolute;
+  top:200px;
+  width:260px;
+  height:380px;
+  background:radial-gradient(ellipse at top,
+    rgba(255,200,200,.35),
+    rgba(255,200,200,.15),
+    transparent 70%);
+  filter:blur(6px);
+  z-index:1;
+}
+
+/* TITLES */
+.title{
+  font-family:Cinzel, serif;
+  font-size:42px;
+  letter-spacing:2px;
+  margin:40px 0 20px;
+}
+
+.subtitle{
+  font-family:Playfair Display, serif;
+  font-size:22px;
+  font-style:italic;
+  font-weight:600;
+  margin-bottom:10px;
+}
+
+.description{
+  max-width:720px;
+  margin:0 auto 40px;
+  font-style:italic;
+  line-height:1.6;
+  opacity:.95;
+}
+
+/* SERVICES */
+.services-toggle{
+  font-family:Cinzel, serif;
+  font-size:26px;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:10px;
+}
+
+.arrow{
+  transition:.4s ease;
+}
+
+.arrow.open{
+  transform:rotate(180deg);
+}
+
+.services-list{
+  max-width:520px;
+  margin:0 auto;
+  overflow:hidden;
+  max-height:0;
+  opacity:0;
+  transform:translateX(-40px);
+  transition:all .6s ease;
+}
+
+.services-list.open{
+  max-height:300px;
+  opacity:1;
+  transform:translateX(0);
+}
+
+.services-list div{
+  padding:10px 0;
+  font-style:italic;
+}
+
+/* BUTTONS — ИЗМЕНЕНЫ НА RGB(255,238,220) */
+.buttons{
+  margin-top:60px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  align-items:center;
+}
+
+.btn{
+  width:100%;
+  max-width:360px;
+  padding:14px 20px;
+  border-radius:40px;
+  text-decoration:none;
+
+  background:var(--btn-bg);
+  color:var(--btn-text);
+
+  font-weight:600;
+  letter-spacing:.6px;
+
+  border:1px solid rgba(84,21,24,.25);
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+
+  transition:.35s ease;
+}
+
+.btn:hover{
+  background:rgb(248,226,204);
+  transform:translateY(-3px);
+  box-shadow:0 16px 45px rgba(0,0,0,.35);
+}
+
+@media(max-width:600px){
+  .title{font-size:30px}
+  .avatar{width:170px;height:170px}
+}
+</style>
+</head>
+
+<body>
+
+<main class="container">
+
+  <div class="avatar-area">
+    <div class="avatar">
+      <img src="avatar.jpg" alt="Red Tent">
+    </div>
+    <div class="light-ray"></div>
+  </div>
+
+  <h1 class="title">The Red Tent</h1>
+
+  <div class="subtitle">О Red Tent:</div>
+
+  <div class="description">
+    Red Tent — это первая в Азербайджане студия женских практик и саморазвития,
+    открытая в начале 2024 года. Это место, где йога встречается с творчеством
+    и глубокой работой над собой. Мы создали пространство, которое позволяет
+    девушкам полностью раскрыться через самые разные форматы.
+    <br><br>
+    Red Tent — это не просто студия, это твой личный эпицентр вдохновения,
+    знаний и поддержки в кругу единомышленниц.
+  </div>
+
+  <div class="services-toggle" onclick="toggleServices()">
+    Наши услуги
+    <span id="arrow" class="arrow">▼</span>
+  </div>
+
+  <div id="services" class="services-list">
+    <div>— что то там</div>
+    <div>— фаерфокс</div>
+    <div>— поставьте мне пожалуйста 5</div>
+  </div>
+
+  <div class="buttons">
+    <a class="btn" href="https://www.instagram.com/redtent_studio?igsh=ejljM2R5azJ5NTlt" target="_blank">Instagram</a>
+    <a class="btn" href="#">Связаться с нами</a>
+    <a class="btn" href="#">Red Tent Community</a>
+    <a class="btn" href="#">Facebook</a>
+  </div>
+
+</main>
+
+<script>
+function toggleServices(){
+  const list=document.getElementById('services');
+  const arrow=document.getElementById('arrow');
+  list.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>

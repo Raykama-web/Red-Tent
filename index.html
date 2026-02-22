@@ -319,6 +319,100 @@ function toggleSubsection(id){
   if(!isOpen){el.classList.add('open');arrow.style.transform='rotate(90deg)'}
 }
 </script>
+  <!-- Вставляем прямо перед <div class="buttons"> -->
+<div class="carousel-container">
+  <div class="carousel-track">
+    <!-- Клонируем первый слайд в конец и последний в начало для бесшовного loop -->
+    <div class="carousel-item"><img src="photo10.jpg" alt=""></div>
+    <div class="carousel-item"><img src="photo1.jpg" alt=""></div>
+    <div class="carousel-item"><img src="photo2.jpg" alt=""></div>
+    <div class="carousel-item"><img src="photo3.jpg" alt=""></div>
+    <div class="carousel-item"><img src="photo4.jpg" alt=""></div>
+    <div class="carousel-item"><img src="photo5.jpg" alt=""></div>
+    <div class="carousel-item"><img src="photo6.jpg" alt=""></div>
+    <div class="carousel-item"><img src="photo7.jpg" alt=""></div>
+    <div class="carousel-item"><img src="photo8.jpg" alt=""></div>
+    <div class="carousel-item"><img src="photo9.jpg" alt=""></div>
+    <div class="carousel-item"><img src="photo10.jpg" alt=""></div>
+    <div class="carousel-item"><img src="photo1.jpg" alt=""></div>
+  </div>
+</div>
+
+<style>
+.carousel-container{
+  position:relative;
+  width:100%;
+  max-width:900px;
+  margin:40px auto;
+  overflow:hidden;
+}
+
+.carousel-track{
+  display:flex;
+  transition:transform 0.5s ease;
+}
+
+.carousel-item{
+  min-width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.carousel-item img{
+  max-width:100%;
+  border-radius:12px;
+  object-fit:cover;
+}
+</style>
+
+<script>
+const track = document.querySelector('.carousel-track');
+const items = document.querySelectorAll('.carousel-item');
+const total = items.length;
+let index = 1; // старт с настоящего первого слайда
+track.style.transform = `translateX(-${index * 100}%)`;
+
+function moveToSlide(i){
+  track.style.transition = 'transform 0.5s ease';
+  track.style.transform = `translateX(-${i * 100}%)`;
+}
+
+function nextSlide(){
+  index++;
+  moveToSlide(index);
+}
+
+let autoSlide = setInterval(nextSlide, 3000);
+
+// Бесшовный loop
+track.addEventListener('transitionend', ()=>{
+  if(index === total - 1) index = 1;
+  if(index === 0) index = total - 2;
+  track.style.transition = 'none';
+  track.style.transform = `translateX(-${index * 100}%)`;
+});
+
+// Свайп
+let startX = 0;
+let isDragging = false;
+
+track.addEventListener('touchstart', e=>{
+  startX = e.touches[0].clientX;
+  isDragging = true;
+  clearInterval(autoSlide);
+});
+
+track.addEventListener('touchend', e=>{
+  if(!isDragging) return;
+  let endX = e.changedTouches[0].clientX;
+  if(endX - startX > 50){ index--; }
+  else if(startX - endX > 50){ index++; }
+  moveToSlide(index);
+  autoSlide = setInterval(nextSlide, 3000);
+  isDragging = false;
+});
+    </script>
 
   <div class="buttons">
     <a class="btn" href="https://www.instagram.com/redtent_studio?igsh=ejljM2R5azJ5NTlt" target="_blank">Instagram</a>

@@ -8,242 +8,360 @@
 
 <style>
 :root{
-  --red-main: #9b212f;
-  --red-dark: #541518;
+  --red-main: rgb(155,33,47);
+  --red-dark: rgb(84,21,24);
   --text-light:#f8eaea;
-  --btn-bg: #ffeedc;
-  --btn-text: #541518;
-  --gold: #e1c699;
+  --btn-bg: rgb(255,238,220);
+  --btn-text: rgb(84,21,24);
+  --gold-beige: #e1c699;
 }
 
-*{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
-html,body{margin:0;padding:0; overflow-x: hidden; background: var(--red-dark);}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0; overflow-x: hidden;}
 
 body{
   min-height:100vh;
-  font-family:Inter, sans-serif;
+  font-family:Inter,system-ui;
   color:var(--text-light);
-  /* Вернул градиент фона */
-  background: linear-gradient(160deg, var(--red-main), var(--red-dark));
+  background:linear-gradient(160deg,var(--red-main),var(--red-dark));
+  background-size:200% 200%;
+  animation:bgFlow 14s ease infinite;
+  display:flex;
+  justify-content:center;
 }
 
-.container{ width:100%; max-width:600px; padding:40px 20px; margin:0 auto; text-align:center; position: relative; z-index: 2; }
+@keyframes bgFlow{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
 
-/* МУЗЫКА */
+.container{
+  width:100%;
+  max-width:900px;
+  padding:60px 24px 80px;
+  text-align:center;
+}
+
+/* MUSIC CONTROL */
 .music-control {
-  position: fixed; top: 15px; right: 15px; z-index: 1000;
-  width: 40px; height: 40px; border-radius: 50%;
-  background: rgba(255,255,255,0.1); backdrop-filter: blur(5px);
-  border: 1px solid var(--gold); display: flex; align-items: center; justify-content: center;
-  /* Добавил тень иконке музыки */
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  cursor: pointer;
+  background: rgba(255,255,255,0.15);
+  padding: 10px;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--btn-bg);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
-/* КАРУСЕЛЬ (СВАЙП) */
-.carousel-viewport {
-  width: 100%; overflow-x: auto; display: flex;
-  scroll-snap-type: x mandatory; scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch; margin: 20px 0;
-  scrollbar-width: none;
-}
-.carousel-viewport::-webkit-scrollbar { display: none; }
-.carousel-item {
-  min-width: 100%; scroll-snap-align: start; padding: 0 5px;
-}
-.carousel-item img { width: 100%; border-radius: 15px; display: block; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
-
-/* УСЛУГИ */
-.services-toggle { font-family: Cinzel; font-size: 24px; cursor: pointer; margin: 30px 0 15px; }
-.services-list { display: none; text-align: left; margin-bottom: 30px; }
-.services-list.active { display: block; }
-
-.service-item { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 15px 0; }
-.service-header { 
-  display: flex; justify-content: space-between; align-items: center; 
-  font-weight: 600; font-size: 18px; cursor: pointer; color: var(--gold);
-}
-.service-content { 
-  max-height: 0; opacity: 0; overflow: hidden; 
-  transition: all 0.5s ease-in-out; font-size: 15px; line-height: 1.6;
-}
-.service-content.open { max-height: 1000px; opacity: 1; padding: 10px 0; }
-
-/* КНОПКИ */
-.btn {
-  display: block; width: 100%; padding: 15px; margin: 12px 0;
-  background: var(--btn-bg); color: var(--btn-text);
-  text-decoration: none; border-radius: 30px; font-weight: 700;
-  transition: 0.3s ease; border: none; font-size: 16px;
-  /* Вернул объемные тени кнопкам */
-  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-}
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-}
-.quotes-btn { background: var(--gold); color: var(--red-dark); }
-
-/* ЦИТАТЫ */
-.overlay {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 2000;
-  backdrop-filter: blur(5px);
-}
-.quote-card { background: #fff9f0; color: #333; padding: 30px; border-radius: 20px; width: 85%; max-width: 400px; text-align: center; font-style: italic; font-family: 'Playfair Display'; font-size: 18px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-
-.divider { height: 1px; background: rgba(255,255,255,0.2); margin: 30px 0; }
-
-/* АВАТАР И ЛУЧ */
-.avatar-area { position: relative; margin-bottom: 20px; }
-.avatar { 
-  width: 180px; height: 180px; border-radius: 50%; 
-  border: 3px solid var(--gold); margin: 0 auto; overflow: hidden; 
-  position: relative; z-index: 2;
-  /* Вернул сильное красное свечение */
-  box-shadow: 0 0 50px rgba(255,100,100,0.4); 
-}
-.avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-/* Вернул луч света за аватаркой, но сделал его статичным, чтобы не лагало */
-.light-ray {
-  position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
-  width: 250px; height: 350px;
-  background: radial-gradient(ellipse at center, rgba(255,150,150,0.25), transparent 70%);
-  filter: blur(10px); z-index: 1;
+/* DIVIDER */
+.divider {
+  height: 1px;
+  width: 80%;
+  background: linear-gradient(90deg, transparent, var(--btn-bg), transparent);
+  margin: 40px auto;
+  opacity: 0.3;
 }
 
+/* QUOTES STYLES */
+.quotes-btn {
+  background: var(--gold-beige) !important;
+  color: var(--red-dark) !important;
+  border: 1px solid #c5a876 !important;
+  cursor: pointer;
+  margin: 0 auto;
+}
+
+.quote-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.quote-card {
+  background: #fdf5e6;
+  color: var(--red-dark);
+  padding: 40px 30px;
+  border-radius: 24px;
+  max-width: 450px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-style: italic;
+  animation: quoteFade 0.5s ease;
+}
+
+@keyframes quoteFade { from {opacity:0; transform: translateY(20px);} to {opacity:1; transform: translateY(0);}}
+
+/* AVATAR */
+.avatar-area{ position:relative; display:flex; justify-content:center; margin-bottom:30px; }
+.avatar{ width:220px; height:220px; border-radius:50%; overflow:hidden; position:relative; z-index:2; box-shadow:0 0 60px rgba(255,120,130,.25); }
+.avatar img{ width:100%; height:100%; object-fit:cover; }
+.light-ray{ position:absolute; top:200px; width:260px; height:380px; background:radial-gradient(ellipse at top, rgba(255,200,200,.35), rgba(255,200,200,.15), transparent 70%); filter:blur(6px); z-index:1; }
+
+.title{ font-family:Cinzel, serif; font-size:42px; letter-spacing:2px; margin:40px 0 20px; }
+.subtitle{ font-family:Playfair Display, serif; font-size:22px; font-style:italic; font-weight:600; margin-bottom:10px; }
+.description{ max-width:720px; margin:0 auto 40px; font-style:italic; line-height:1.6; opacity:.95; }
+
+/* SERVICES STYLES */
+.services-toggle{ font-family:Cinzel, serif; font-size:26px; cursor:pointer; display:inline-flex; align-items:center; gap:12px; margin-bottom:10px; }
+#services-arrow { display: inline-block; transition: 0.3s; }
+#services-arrow.open { transform: rotate(180deg); }
+.services-list{ max-height:0; opacity:0; overflow:hidden; transition: 0.6s ease; transform:translateY(-10px); text-align: left; max-width: 600px; margin: 0 auto; }
+.services-list.open{ max-height:4000px; opacity:1; transform:translateY(0); }
+.service-section{ border-top:1px solid rgba(255,238,220,0.3); padding:15px 0; }
+.service-title{ font-weight:700; font-size:18px; cursor:pointer; color:#ffeedd; display:flex; justify-content:space-between; align-items:center; }
+.section-arrow{ transition: transform 0.3s ease; }
+.subsection{ max-height:0; opacity:0; overflow:hidden; padding: 10px 0; color:#ffeedd; font-weight:300; font-style:italic; transition: 0.4s ease; line-height: 1.5; }
+.subsection.open{ max-height:2000px; opacity:1; }
+
+/* BUTTONS */
+.buttons{ margin-top:60px; display:flex; flex-direction:column; gap:16px; align-items:center; }
+.btn{ width:100%; max-width:360px; padding:14px 20px; border-radius:40px; text-decoration:none; background:var(--btn-bg); color:var(--btn-text); font-weight:600; border:1px solid rgba(84,21,24,.25); box-shadow:0 10px 30px rgba(0,0,0,.25); transition:.35s ease; display: flex; justify-content: center; align-items: center; }
+.btn:hover{ background:rgb(248,226,204); transform:translateY(-3px); }
+
+/* CAROUSEL */
+.carousel-container{ position:relative; width:100%; margin:20px auto; overflow:hidden; border-radius:12px; }
+.carousel-track{ display:flex; transition:transform 0.5s ease; }
+.carousel-item{ min-width:100%; }
+.carousel-item img{ width:100%; border-radius:12px; object-fit:cover; }
+
+@media(max-width:600px){ .title{font-size:30px} .avatar{width:170px;height:170px} }
 </style>
 </head>
+
 <body>
 
 <div class="music-control" onclick="toggleMusic()">
-  <span id="m-icon">🔊</span>
-  <audio id="track" loop><source src="music.mp3" type="audio/mpeg"></audio>
+  <span id="music-icon">🔊</span>
+  <audio id="bg-music" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
 </div>
 
-<div class="container">
+<main class="container">
   <div class="avatar-area">
-    <div class="avatar"><img src="avatar.jpg"></div>
+    <div class="avatar"><img src="avatar.jpg" alt="Red Tent"></div>
     <div class="light-ray"></div>
   </div>
-  
-  <h1 style="font-family:Cinzel; font-size: 32px; margin-bottom: 5px; color: var(--gold); text-shadow: 0 2px 4px rgba(0,0,0,0.5);">The Red Tent</h1>
-  <p style="font-style:italic; opacity: 0.9; margin-bottom: 0;">Первая в Азербайджане студия женских практик</p>
+
+  <h1 class="title">The Red Tent</h1>
+  <div class="subtitle">О Red Tent:</div>
+  <div class="description">
+    Red Tent — это первая в Азербайджане студия женских практик и саморазвития. Это место, где йога встречается с творчеством
+    и глубокой работой над собой. Мы создали пространство, которое позволяет
+    женщинам полностью раскрыться через самые разные форматы.
+    <br><br>
+    Red Tent — это не просто студия, это твой личный эпицентр вдохновения,
+    знаний и поддержки в кругу единомышленниц.
+  </div>
 
   <div class="divider"></div>
 
-  <div class="carousel-viewport" id="slider">
-    <div class="carousel-item"><img src="photo1.jpg"></div>
-    <div class="carousel-item"><img src="photo2.jpg"></div>
-    <div class="carousel-item"><img src="photo3.jpg"></div>
-    <div class="carousel-item"><img src="photo4.jpg"></div>
-    <div class="carousel-item"><img src="photo5.jpg"></div>
-    <div class="carousel-item"><img src="photo6.jpg"></div>
-    <div class="carousel-item"><img src="photo7.jpg"></div>
-    <div class="carousel-item"><img src="photo8.jpg"></div>
-    <div class="carousel-item"><img src="photo9.jpg"></div>
-    <div class="carousel-item"><img src="photo10.jpg"></div>
+  <div class="carousel-container">
+    <div class="carousel-track">
+      <div class="carousel-item"><img src="photo10.jpg" alt=""></div>
+      <div class="carousel-item"><img src="photo1.jpg" alt=""></div>
+      <div class="carousel-item"><img src="photo2.jpg" alt=""></div>
+      <div class="carousel-item"><img src="photo3.jpg" alt=""></div>
+      <div class="carousel-item"><img src="photo4.jpg" alt=""></div>
+      <div class="carousel-item"><img src="photo5.jpg" alt=""></div>
+      <div class="carousel-item"><img src="photo6.jpg" alt=""></div>
+      <div class="carousel-item"><img src="photo7.jpg" alt=""></div>
+      <div class="carousel-item"><img src="photo8.jpg" alt=""></div>
+      <div class="carousel-item"><img src="photo9.jpg" alt=""></div>
+      <div class="carousel-item"><img src="photo10.jpg" alt=""></div>
+      <div class="carousel-item"><img src="photo1.jpg" alt=""></div>
+    </div>
   </div>
-
-  <button class="btn quotes-btn" onclick="showQuote()">Цитата дня</button>
 
   <div class="divider"></div>
 
-  <div class="services-toggle" onclick="document.getElementById('s-list').classList.toggle('active')" style="color: var(--gold); text-shadow: 0 0 10px rgba(225,198,153,0.3);">
-    Наши услуги ▼
+  <div class="btn quotes-btn" onclick="showQuote()">Цитаты дня</div>
+
+  <div class="divider"></div>
+
+  <div class="services-toggle" onclick="toggleServices()">
+    Наши услуги <span id="services-arrow">▼</span>
   </div>
 
-  <div id="s-list" class="services-list">
-    <div class="service-item">
-      <div class="service-header" onclick="toggleS('s1')">Йога <span>+</span></div>
-      <div id="s1" class="service-content">
-        Индивидуальные классы КЙ: 300 АЗН (1 чел), 200 АЗН (с чел в паре). Программа на 40 дней по нумерологии.
+  <div id="services" class="services-list">
+    <div class="service-section">
+      <div class="service-title" onclick="toggleSubsection('yoga')">Раздел: Йога <span class="section-arrow">▶</span></div>
+      <div id="yoga" class="subsection">
+        Индивидуальные классы КЙ:<br>
+        Для каждого ученика разрабатывается индивидуальная программа занятий, учитывая физическую подготовку и расчёты по тантрической нумерологии. Мы будем практиковать комплексы Кундалини йоги 40 дней, включая домашние задания. За это время укрепляются нервная, эндокринная и дыхательные системы, очищается тело от токсинов и восстанавливается баланс между телом и эмоциями.<br>
+        Продолжительность урока: 1 час — 1 час 15 минут.<br>
+        <em>Цены:</em><br>
+        • 1 человек — 300 АЗН<br>
+        • 2 человека — по 200 АЗН
       </div>
     </div>
-    <div class="service-item">
-      <div class="service-header" onclick="toggleS('s2')">Астрология <span>+</span></div>
-      <div id="s2" class="service-content">
-        Детская астопсихология (130 АЗН), Соляр (150-200 АЗН), Родовой гороскоп (150 АЗН).
+
+    <div class="service-section">
+      <div class="service-title" onclick="toggleSubsection('astro')">Раздел: Астрология <span class="section-arrow">▶</span></div>
+      <div id="astro" class="subsection">
+        ▫️ Детская астопсихология: 1 ребёнок — 1,5 часа — 130 АЗН<br><br>
+        ▫️ Соляр (персональный гороскоп на год):<br>
+        Гороскоп на год даёт рекомендации, как провести 12 дней после дня рождения, чтобы весь год был удачным. Это время для того, чтобы стать лучшей версией себя, принять прошлое, насладиться настоящим и смотреть в будущее с надеждой.<br>
+        Продолжительность: 1,5 часа — 150 АЗН + астро планирование (100 АЗН) - 200 АЗН 2.30 часа<br><br>
+        ▫️ Родовой гороскоп: Баресма — Анализ родовой линии, её влияния на вашу жизнь.<br>
+        Продолжительность: 1,5 часа — 150 АЗН
       </div>
     </div>
-    <div class="service-item">
-      <div class="service-header" onclick="toggleS('s3')">Коучинг и Портрет <span>+</span></div>
-      <div id="s3" class="service-content">
-        Архетипический портрет (150 АЗН), Теневой (150 АЗН), Совместимость (300 АЗН), Метафорические карты (80 АЗН).
+
+    <div class="service-section">
+      <div class="service-title" onclick="toggleSubsection('coaching')">Раздел: Коучинг <span class="section-arrow">▶</span></div>
+      <div id="coaching" class="subsection">
+        Архетипический портрет личности:<br>
+        Индивидуальный портрет, который помогает проанализировать личность, её потенциал, таланты и возможности. Позволяет выявить скрытые страхи и блокировки в подсознании. Также можно определить, в каких условиях человек чувствует себя комфортно, а какие ситуации неприемлемы.<br>
+        <em>Цены:</em><br>
+        • Архетипический портрет — 150 АЗН<br><br>
+        ▫️ Теневой портрет:<br>
+        Теневой портрет раскрывает скрытые аспекты личности, которые человек вытесняет из сознания, часто воспринимая их как негативные или грешные.<br>
+        <em>Цены:</em> • Теневой портрет — 150 АЗН<br><br>
+        ▫️ Комплексно 2 портрета:<br>
+         (например: кармический+теневой)<br>
+        <em>Цены:</em> • 2 портрета — 200 АЗН<br><br>
+        ▫️ Комплексно 3 портрета:<br>
+        (кармический+теневой+архетипический)<br>
+        <em>Цены:</em> • 3 портрета — 300 АЗН<br><br>
+        ▫️ Совместимость с другим человеком:<br>
+        Анализ отношений между людьми, будь то профессиональные, деловые, любовные или семейные. Метод помогает понять, что связывает или разделяет двух людей.<br>
+        <em>Цены:</em> • Совместимость — 300 АЗН<br><br>
+        ▫️ Арт-терапия:<br>
+        Арт-терапия с использованием рисуночных техник помогает выражать эмоциональное состояние, идеально подходит для работы с детьми, подростками и для проработки отношений родителей и детей.<br>
+        <em>Цены:</em> • Индивидуальное занятие — 100 АЗН • Групповое занятие (минимум 4 человека) — 50 АЗН<br><br>
+        ▫️ Метафорические карты (индивидуально):<br>
+        Метафорические карты помогают погрузиться в бессознательное, выявить проблемы, переживания, а также разобраться с мечтами и получить ответы на важные вопросы.<br>
+        <em>Цены:</em> • 1 человек — 1,5 часа — 80 АЗН
       </div>
     </div>
-    <div class="service-item">
-      <div class="service-header" onclick="toggleS('s4')">Игры <span>+</span></div>
-      <div id="s4" class="service-content">
-        Игра «Красный Шатер»: Индивидуально (80-200 АЗН), Группа (130-400 АЗН).
+
+    <div class="service-section">
+      <div class="service-title" onclick="toggleSubsection('games')">Раздел: Игры <span class="section-arrow">▶</span></div>
+      <div id="games" class="subsection">
+        ▫️ Игра «Красный Шатер»:<br><br>
+        Индивидуально:<br>
+        1 этап (любой) — 80 АЗН<br>
+        4 этапа сразу — 200 АЗН<br><br>
+        Групповая игра (3 человека):<br>
+        1 этап (любой) — 130 АЗН за группу<br>
+        4 этапа сразу — 400 АЗН за группу
       </div>
     </div>
-    <div class="service-item">
-      <div class="service-header" onclick="toggleS('s5')">НЛП <span>+</span></div>
-      <div id="s5" class="service-content">
-        Техники избавления от страхов и ограничивающих убеждений — 50 АЗН за сессию.
+
+    <div class="service-section">
+      <div class="service-title" onclick="toggleSubsection('nlp')">Раздел: НЛП <span class="section-arrow">▶</span></div>
+      <div id="nlp" class="subsection">
+        ▫️ Техники избавления от страхов, неправильных установок, ограничивающих убеждений и повторяющихся шаблонов и сценариев — 50 АЗН за 1 технику во время сессии<br><br>
       </div>
     </div>
   </div>
+
+  <div class="divider"></div>
 
   <div class="buttons">
-    <a href="https://www.instagram.com/redtent_studio" class="btn">Instagram</a>
-    <a href="https://wa.me/994518339556" class="btn">WhatsApp</a>
-    <a href="https://chat.whatsapp.com/G4g6Q5BJrVh82Z8d2jbRGC" class="btn">Сообщество</a>
+    <a class="btn" href="https://www.instagram.com/redtent_studio?igsh=ejljM2R5azJ5NTlt" target="_blank">Instagram</a>
+    <a class="btn" href="https://wa.me/994518339556">Связаться с нами</a>
+    <a class="btn" href="https://chat.whatsapp.com/G4g6Q5BJrVh82Z8d2jbRGC">Red Tent Community</a>
+    <a class="btn" href="https://share.google/De1g1mtdcl34iOU8C">Facebook</a>
   </div>
-</div>
+</main>
 
-<div id="q-box" class="overlay" onclick="this.style.display='none'">
-  <div class="quote-card" id="q-text"></div>
+<div id="quote-overlay" class="quote-overlay" onclick="closeQuote()">
+  <div class="quote-card" onclick="event.stopPropagation()">
+    <p id="quote-text"></p>
+  </div>
 </div>
 
 <script>
-const quotes = ["Тишина внутри — источник силы.", "Дыхание возвращает тебя к себе.", "Гармония начинается с принятия.", "Сила начинается с мягкости.", "Замедлись, и мир станет яснее."];
-
-function showQuote() {
-  document.getElementById('q-text').innerText = quotes[Math.floor(Math.random()*quotes.length)];
-  document.getElementById('q-box').style.display = 'flex';
-}
-
-function toggleS(id) {
-  const c = document.getElementById(id);
-  const isOpen = c.classList.contains('open');
-  document.querySelectorAll('.service-content').forEach(el => el.classList.remove('open'));
-  if(!isOpen) c.classList.add('open');
-}
-
-// АВТОПРОКРУТКА + РУЧНОЙ СВАЙП (без изменений)
-const slider = document.getElementById('slider');
-let isMoving = false;
-
-function autoPlay() {
-  if (isMoving) return;
-  let width = slider.offsetWidth;
-  if (slider.scrollLeft + width >= slider.scrollWidth) {
-    slider.scrollTo({left: 0, behavior: 'smooth'});
-  } else {
-    slider.scrollBy({left: width, behavior: 'smooth'});
-  }
-}
-let timer = setInterval(autoPlay, 3000);
-
-slider.addEventListener('touchstart', () => isMoving = true);
-slider.addEventListener('touchend', () => {
-  setTimeout(() => isMoving = false, 5000); 
-});
+// МУЗЫКА
+const music = document.getElementById('bg-music');
+const musicIcon = document.getElementById('music-icon');
+let firstInteraction = false;
 
 function toggleMusic() {
-  const m = document.getElementById('track');
-  const i = document.getElementById('m-icon');
-  if (m.paused) { m.play(); i.innerText = '🔊'; } else { m.pause(); i.innerText = '🔇'; }
+  firstInteraction = true; 
+  if (music.paused) {
+    music.play();
+    musicIcon.innerText = '🔊';
+  } else {
+    music.pause();
+    musicIcon.innerText = '🔇';
+  }
 }
 
-window.addEventListener('click', () => { 
-  const m = document.getElementById('track');
-  if(m.paused) m.play().catch(()=>{}); 
+window.addEventListener('click', () => {
+  if (!firstInteraction && music.paused) {
+    music.play().catch(() => {}); 
+    firstInteraction = true;
+  }
 }, {once: true});
-</script>
 
+// ЦИТАТЫ
+const quotes = ["Тишина внутри — источник силы.", "Дыхание возвращает тебя к себе.", "Спокойствие — это тоже действие.", "Сила начинается с мягкости.", "Тело помнит путь к гармонии.", "Замедлись, и мир станет яснее.", "Внутренний мир — твой настоящий дом.", "Каждое дыхание — новый шанс.", "Баланс рождается в тишине.", "Прислушайся к своему телу.", "Спокойный ум — сильное сердце.", "Гармония начинается внутри.", "Женская энергия — это поток.", "Медитация — разговор с душой.", "В мягкости живёт настоящая сила.", "Слушай сердце, а не шум мира.", "Тишина лечит лучше слов.", "Там, где есть дыхание — есть жизнь.", "Тело — храм твоей энергии.", "Внутренний свет всегда рядом.", "Отпусти напряжение — впусти покой.", "Каждый вдох наполняет силой.", "В покое рождается ясность.", "Женская энергия — это глубина.", "Медленность — это осознанность.", "Тело знает дорогу к балансу.", "Гармония начинается с принятия.", "Спокойствие делает мысли ясными.", "Сила приходит через тишину.", "Осознанность — ключ к свободе.", "Внутренний мир сильнее внешнего шума.", "Дыхание соединяет тело и разум.", "Тишина — язык души.", "Энергия течёт там, где есть внимание.", "Присутствие — это настоящая жизнь.", "Замедление — путь к глубине.", "Женская энергия рождает пространство.", "Спокойствие — форма мудрости.", "Тело говорит, если его слушать.", "Покой — это сила без напряжения.", "Медитация возвращает к себе.", "Внутри тебя больше света, чем ты думаешь.", "Мягкость меняет мир.", "Спокойствие создаёт силу.", "Дыхание открывает пространство.", "Баланс — это искусство чувствовать.", "Слушай своё внутреннее движение.", "В каждом моменте есть тишина.", "Гармония живёт в настоящем.", "Покой — начало всех перемен."];
+
+function showQuote() {
+  const rand = Math.floor(Math.random() * quotes.length);
+  document.getElementById('quote-text').innerText = quotes[rand];
+  document.getElementById('quote-overlay').style.display = 'flex';
+}
+function closeQuote() { document.getElementById('quote-overlay').style.display = 'none'; }
+
+// УСЛУГИ
+function toggleServices(){
+  const list = document.getElementById('services');
+  const arrow = document.getElementById('services-arrow');
+  list.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+function toggleSubsection(id){
+  const el = document.getElementById(id);
+  const arrow = el.previousElementSibling.querySelector('.section-arrow');
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.subsection').forEach(s => s.classList.remove('open'));
+  document.querySelectorAll('.section-arrow').forEach(a => a.style.transform = 'rotate(0deg)');
+  if(!isOpen) {
+    el.classList.add('open');
+    arrow.style.transform = 'rotate(90deg)';
+  }
+}
+
+// КАРУСЕЛЬ
+const track = document.querySelector('.carousel-track');
+const items = document.querySelectorAll('.carousel-item');
+let index = 1;
+track.style.transform = `translateX(-100%)`;
+
+function nextSlide(){
+  index++;
+  track.style.transition = '0.5s ease';
+  track.style.transform = `translateX(-${index * 100}%)`;
+}
+let autoSlide = setInterval(nextSlide, 3000);
+
+track.addEventListener('transitionend', ()=>{
+  if(index >= items.length - 1) { index = 1; track.style.transition = 'none'; track.style.transform = `translateX(-100%)`; }
+  if(index <= 0) { index = items.length - 2; track.style.transition = 'none'; track.style.transform = `translateX(-${index * 100}%)`; }
+});
+</script>
 </body>
 </html>
-

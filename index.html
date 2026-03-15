@@ -17,9 +17,9 @@
 }
 
 *{box-sizing:border-box}
-html,body{margin:0;padding:0; overflow-x: hidden; background: var(--red-dark);}
+html,body{margin:0;padding:0; overflow-x: hidden;}
 
-/* ФОНОВЫЙ ХОЛСТ */
+/* ХОЛСТ ПОВЕРХ ГРАДИЕНТА */
 #bg-canvas {
   position: fixed;
   top: 0;
@@ -27,13 +27,16 @@ html,body{margin:0;padding:0; overflow-x: hidden; background: var(--red-dark);}
   width: 100%;
   height: 100%;
   z-index: -1;
-  background: var(--red-main);
+  pointer-events: none;
 }
 
 body{
   min-height:100vh;
   font-family:Inter,system-ui;
   color:var(--text-light);
+  /* ТВОЙ ОРИГИНАЛЬНЫЙ ЦВЕТ */
+  background: linear-gradient(160deg, var(--red-main), var(--red-dark));
+  background-size: 200% 200%;
   display:flex;
   justify-content:center;
 }
@@ -300,56 +303,63 @@ body{
 </div>
 
 <script>
-// --- АНИМИРОВАННЫЙ ФОН (АКВАРЕЛЬ) ---
+// --- АНИМАЦИЯ АКВАРЕЛИ ---
 const canvas = document.getElementById('bg-canvas');
 const ctx = canvas.getContext('2d');
-let dots = [];
+let particles = [];
 
-function resize() {
+function initCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
-window.addEventListener('resize', resize);
-resize();
+window.addEventListener('resize', initCanvas);
+initCanvas();
 
-class Dot {
+class Particle {
   constructor() {
+    this.reset();
+  }
+  reset() {
     this.x = Math.random() * canvas.width;
     this.y = Math.random() * canvas.height;
-    this.radius = Math.random() * 150 + 100;
-    this.dx = (Math.random() - 0.5) * 0.5;
-    this.dy = (Math.random() - 0.5) * 0.5;
-    this.alpha = Math.random() * 0.2;
-  }
-  draw() {
-    let gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
-    gradient.addColorStop(0, `rgba(255, 238, 220, ${this.alpha})`);
-    gradient.addColorStop(1, `rgba(255, 238, 220, 0)`);
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fill();
+    this.size = Math.random() * 200 + 100;
+    this.velocity = Math.random() * 0.5 + 0.2;
+    this.angle = Math.random() * Math.PI * 2;
+    this.alpha = 0;
+    this.targetAlpha = Math.random() * 0.15 + 0.05;
   }
   update() {
-    this.x += this.dx;
-    this.y += this.dy;
-    if (this.x < -this.radius) this.x = canvas.width + this.radius;
-    if (this.x > canvas.width + this.radius) this.x = -this.radius;
-    if (this.y < -this.radius) this.y = canvas.height + this.radius;
-    if (this.y > canvas.height + this.radius) this.y = -this.radius;
-    this.draw();
+    this.x += Math.cos(this.angle) * this.velocity;
+    this.y += Math.sin(this.angle) * this.velocity;
+    if (this.alpha < this.targetAlpha) this.alpha += 0.002;
+    
+    if (this.x < -this.size || this.x > canvas.width + this.size || 
+        this.y < -this.size || this.y > canvas.height + this.size) {
+      this.reset();
+    }
+  }
+  draw() {
+    let grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+    grad.addColorStop(0, `rgba(255, 255, 255, ${this.alpha})`);
+    grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
   }
 }
 
-for(let i=0; i<15; i++) dots.push(new Dot());
+for (let i = 0; i < 12; i++) particles.push(new Particle());
 
-function animateBg() {
-  ctx.fillStyle = 'rgb(155, 33, 47)'; // Основной красный
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  dots.forEach(dot => dot.update());
-  requestAnimationFrame(animateBg);
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.update();
+    p.draw();
+  });
+  requestAnimationFrame(animate);
 }
-animateBg();
+animate();
 
 // --- МУЗЫКА ---
 const music = document.getElementById('bg-music');
@@ -403,13 +413,12 @@ function toggleSubsection(id){
   }
 }
 
-// --- УЛУЧШЕННАЯ КАРУСЕЛЬ (SWIPE + AUTO) ---
+// --- КАРУСЕЛЬ (SWIPE + AUTO) ---
 const track = document.getElementById('track');
 const container = document.getElementById('carousel');
 const items = document.querySelectorAll('.carousel-item');
 let index = 1;
 let startX = 0;
-let currentTranslate = 0;
 let isDragging = false;
 let autoSlideInterval;
 
@@ -431,7 +440,6 @@ function stopAutoSlide() {
   clearInterval(autoSlideInterval);
 }
 
-// Обработка бесконечности
 track.addEventListener('transitionend', () => {
   if (index >= items.length - 1) {
     index = 1;
@@ -445,7 +453,6 @@ track.addEventListener('transitionend', () => {
   }
 });
 
-// Тач-события и мышь
 container.addEventListener('mousedown', dragStart);
 container.addEventListener('touchstart', dragStart);
 container.addEventListener('mouseup', dragEnd);
@@ -474,19 +481,13 @@ function dragEnd(e) {
   isDragging = false;
   const endX = e.type.includes('mouse') ? e.pageX : (e.changedTouches ? e.changedTouches[0].clientX : startX);
   const diff = endX - startX;
-
   if (Math.abs(diff) > 50) {
     if (diff > 0) index--;
     else index++;
   }
-  
   track.style.transition = 'transform 0.5s ease';
   setPosition();
   startAutoSlide();
 }
 
-// Запуск
-setPosition();
-startAutoSlide();
-</script>
-</body>
+setPos

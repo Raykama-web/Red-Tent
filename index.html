@@ -17,23 +17,25 @@
 }
 
 *{box-sizing:border-box}
-html,body{margin:0;padding:0; overflow-x: hidden;}
+html,body{margin:0;padding:0; overflow-x: hidden; background: var(--red-dark);}
+
+/* ФОНОВЫЙ ХОЛСТ */
+#bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: var(--red-main);
+}
 
 body{
   min-height:100vh;
   font-family:Inter,system-ui;
   color:var(--text-light);
-  background:linear-gradient(160deg,var(--red-main),var(--red-dark));
-  background-size:200% 200%;
-  animation:bgFlow 14s ease infinite;
   display:flex;
   justify-content:center;
-}
-
-@keyframes bgFlow{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
 }
 
 .container{
@@ -41,6 +43,8 @@ body{
   max-width:900px;
   padding:60px 24px 80px;
   text-align:center;
+  position: relative;
+  z-index: 1;
 }
 
 /* MUSIC CONTROL */
@@ -138,16 +142,19 @@ body{
 .btn:hover{ background:rgb(248,226,204); transform:translateY(-3px); }
 
 /* CAROUSEL */
-.carousel-container{ position:relative; width:100%; margin:20px auto; overflow:hidden; border-radius:12px; }
+.carousel-container{ position:relative; width:100%; margin:20px auto; overflow:hidden; border-radius:12px; cursor: grab; touch-action: pan-y; }
+.carousel-container:active { cursor: grabbing; }
 .carousel-track{ display:flex; transition:transform 0.5s ease; }
-.carousel-item{ min-width:100%; }
-.carousel-item img{ width:100%; border-radius:12px; object-fit:cover; }
+.carousel-item{ min-width:100%; user-select: none; }
+.carousel-item img{ width:100%; border-radius:12px; object-fit:cover; pointer-events: none; }
 
 @media(max-width:600px){ .title{font-size:30px} .avatar{width:170px;height:170px} }
 </style>
 </head>
 
 <body>
+
+<canvas id="bg-canvas"></canvas>
 
 <div class="music-control" onclick="toggleMusic()">
   <span id="music-icon">🔊</span>
@@ -175,8 +182,8 @@ body{
 
   <div class="divider"></div>
 
-  <div class="carousel-container">
-    <div class="carousel-track">
+  <div class="carousel-container" id="carousel">
+    <div class="carousel-track" id="track">
       <div class="carousel-item"><img src="photo10.jpg" alt=""></div>
       <div class="carousel-item"><img src="photo1.jpg" alt=""></div>
       <div class="carousel-item"><img src="photo2.jpg" alt=""></div>
@@ -293,7 +300,58 @@ body{
 </div>
 
 <script>
-// МУЗЫКА
+// --- АНИМИРОВАННЫЙ ФОН (АКВАРЕЛЬ) ---
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let dots = [];
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+class Dot {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.radius = Math.random() * 150 + 100;
+    this.dx = (Math.random() - 0.5) * 0.5;
+    this.dy = (Math.random() - 0.5) * 0.5;
+    this.alpha = Math.random() * 0.2;
+  }
+  draw() {
+    let gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+    gradient.addColorStop(0, `rgba(255, 238, 220, ${this.alpha})`);
+    gradient.addColorStop(1, `rgba(255, 238, 220, 0)`);
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  update() {
+    this.x += this.dx;
+    this.y += this.dy;
+    if (this.x < -this.radius) this.x = canvas.width + this.radius;
+    if (this.x > canvas.width + this.radius) this.x = -this.radius;
+    if (this.y < -this.radius) this.y = canvas.height + this.radius;
+    if (this.y > canvas.height + this.radius) this.y = -this.radius;
+    this.draw();
+  }
+}
+
+for(let i=0; i<15; i++) dots.push(new Dot());
+
+function animateBg() {
+  ctx.fillStyle = 'rgb(155, 33, 47)'; // Основной красный
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  dots.forEach(dot => dot.update());
+  requestAnimationFrame(animateBg);
+}
+animateBg();
+
+// --- МУЗЫКА ---
 const music = document.getElementById('bg-music');
 const musicIcon = document.getElementById('music-icon');
 let firstInteraction = false;
@@ -316,7 +374,7 @@ window.addEventListener('click', () => {
   }
 }, {once: true});
 
-// ЦИТАТЫ
+// --- ЦИТАТЫ ---
 const quotes = ["Тишина внутри — источник силы.", "Дыхание возвращает тебя к себе.", "Не засыпай ночью - пока не будешь доволен своим днём.","Спокойствие — это тоже действие.", "Сила начинается с мягкости.", "Тело помнит путь к гармонии.", "Замедлись, и мир станет яснее.", "Внутренний мир — твой настоящий дом.", "Каждое дыхание — новый шанс.", "Баланс рождается в тишине.", "Прислушайся к своему телу.", "Спокойный ум — сильное сердце.", "Гармония начинается внутри.", "Женская энергия — это поток.", "Медитация — разговор с душой.", "В мягкости живёт настоящая сила.", "Слушай сердце, а не шум мира.", "Тишина лечит лучше слов.", "Там, где есть дыхание — есть жизнь.", "Тело — храм твоей энергии.", "Не засыпай ночью - пока не будешь доволен своим днём.", "Внутренний свет всегда рядом.", "Отпусти напряжение — впусти покой.", "Каждый вдох наполняет силой.", "В покое рождается ясность.", "Женская энергия — это глубина.", "Медленность — это осознанность.", "Тело знает дорогу к балансу.", "Гармония начинается с принятия.", "Спокойствие делает мысли ясными.", "Сила приходит через тишину.", "Осознанность — ключ к свободе.", "Внутренний мир сильнее внешнего шума.", "Дыхание соединяет тело и разум.", "Тишина — язык души.", "Энергия течёт там, где есть внимание.", "Присутствие — это настоящая жизнь.", "Замедление — путь к глубине.", "Женская энергия рождает пространство.", "Спокойствие — форма мудрости.", "Тело говорит, если его слушать.", "Покой — это сила без напряжения.", "Медитация возвращает к себе.", "Внутри тебя больше света, чем ты думаешь.", "Мягкость меняет мир.", "Спокойствие создаёт силу.", "Дыхание открывает пространство.", "Баланс — это искусство чувствовать.", "Слушай своё внутреннее движение.", "В каждом моменте есть тишина.", "Гармония живёт в настоящем.", "Покой — начало всех перемен."];
 
 function showQuote() {
@@ -326,7 +384,7 @@ function showQuote() {
 }
 function closeQuote() { document.getElementById('quote-overlay').style.display = 'none'; }
 
-// УСЛУГИ
+// --- УСЛУГИ ---
 function toggleServices(){
   const list = document.getElementById('services');
   const arrow = document.getElementById('services-arrow');
@@ -345,23 +403,90 @@ function toggleSubsection(id){
   }
 }
 
-// КАРУСЕЛЬ
-const track = document.querySelector('.carousel-track');
+// --- УЛУЧШЕННАЯ КАРУСЕЛЬ (SWIPE + AUTO) ---
+const track = document.getElementById('track');
+const container = document.getElementById('carousel');
 const items = document.querySelectorAll('.carousel-item');
 let index = 1;
-track.style.transform = `translateX(-100%)`;
+let startX = 0;
+let currentTranslate = 0;
+let isDragging = false;
+let autoSlideInterval;
 
-function nextSlide(){
-  index++;
-  track.style.transition = '0.5s ease';
+function setPosition() {
   track.style.transform = `translateX(-${index * 100}%)`;
 }
-let autoSlide = setInterval(nextSlide, 3000);
 
-track.addEventListener('transitionend', ()=>{
-  if(index >= items.length - 1) { index = 1; track.style.transition = 'none'; track.style.transform = `translateX(-100%)`; }
-  if(index <= 0) { index = items.length - 2; track.style.transition = 'none'; track.style.transform = `translateX(-${index * 100}%)`; }
+function nextSlide() {
+  index++;
+  track.style.transition = 'transform 0.5s ease';
+  setPosition();
+}
+
+function startAutoSlide() {
+  autoSlideInterval = setInterval(nextSlide, 3000);
+}
+
+function stopAutoSlide() {
+  clearInterval(autoSlideInterval);
+}
+
+// Обработка бесконечности
+track.addEventListener('transitionend', () => {
+  if (index >= items.length - 1) {
+    index = 1;
+    track.style.transition = 'none';
+    setPosition();
+  }
+  if (index <= 0) {
+    index = items.length - 2;
+    track.style.transition = 'none';
+    setPosition();
+  }
 });
+
+// Тач-события и мышь
+container.addEventListener('mousedown', dragStart);
+container.addEventListener('touchstart', dragStart);
+container.addEventListener('mouseup', dragEnd);
+container.addEventListener('mouseleave', dragEnd);
+container.addEventListener('touchend', dragEnd);
+container.addEventListener('mousemove', dragMove);
+container.addEventListener('touchmove', dragMove);
+
+function dragStart(e) {
+  stopAutoSlide();
+  isDragging = true;
+  startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+  track.style.transition = 'none';
+}
+
+function dragMove(e) {
+  if (!isDragging) return;
+  const currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+  const diff = currentX - startX;
+  const movePercent = (diff / container.offsetWidth) * 100;
+  track.style.transform = `translateX(calc(-${index * 100}% + ${movePercent}%))`;
+}
+
+function dragEnd(e) {
+  if (!isDragging) return;
+  isDragging = false;
+  const endX = e.type.includes('mouse') ? e.pageX : (e.changedTouches ? e.changedTouches[0].clientX : startX);
+  const diff = endX - startX;
+
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) index--;
+    else index++;
+  }
+  
+  track.style.transition = 'transform 0.5s ease';
+  setPosition();
+  startAutoSlide();
+}
+
+// Запуск
+setPosition();
+startAutoSlide();
 </script>
 </body>
-</html>

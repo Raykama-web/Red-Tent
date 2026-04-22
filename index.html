@@ -19,7 +19,6 @@
 *{box-sizing:border-box}
 html,body{margin:0;padding:0; overflow-x: hidden;}
 
-/* ТВОЙ ОРИГИНАЛЬНЫЙ АНИМИРОВАННЫЙ ГРАДИЕНТ */
 body{
   min-height:100vh;
   font-family:Inter,system-ui;
@@ -37,14 +36,13 @@ body{
   100%{background-position:0% 50%}
 }
 
-/* ХОЛСТ ДЛЯ АКВАРЕЛИ */
 #bg-canvas {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  z-index: 1; /* Фон над body, но под контентом */
-  pointer-events: none; /* КРИТИЧНО: чтобы клики проходили сквозь фон */
-  filter: blur(10px); /* Легкое размытие для мягкости */
+  z-index: 1;
+  pointer-events: none;
+  filter: blur(10px);
 }
 
 .container{
@@ -53,10 +51,28 @@ body{
   padding:60px 24px 80px;
   text-align:center;
   position: relative;
-  z-index: 10; /* КОНТЕНТ ВЫШЕ ФОНА */
+  z-index: 10;
 }
 
-/* MUSIC CONTROL */
+.lang-control {
+  position: fixed;
+  top: 20px; left: 20px;
+  z-index: 1000;
+  cursor: pointer;
+  background: rgba(255,255,255,0.15);
+  padding: 10px;
+  border-radius: 12px;
+  min-width: 45px; height: 45px;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--btn-bg);
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  color: var(--text-light);
+  transition: 0.3s;
+}
+.lang-control:hover { background: var(--btn-bg); color: var(--red-dark); }
+
 .music-control {
   position: fixed;
   top: 20px; right: 20px;
@@ -94,7 +110,6 @@ body{
   font-family: 'Playfair Display', serif;
 }
 
-/* AVATAR */
 .avatar-area{ position:relative; display:flex; justify-content:center; margin-bottom:30px; }
 .avatar{ width:220px; height:220px; border-radius:50%; overflow:hidden; position:relative; z-index:2; box-shadow:0 0 60px rgba(255,120,130,.25); }
 .avatar img{ width:100%; height:100%; object-fit:cover; }
@@ -104,7 +119,6 @@ body{
 .subtitle{ font-family:Playfair Display, serif; font-size:22px; font-style:italic; font-weight:600; }
 .description{ max-width:720px; margin:0 auto 40px; line-height:1.6; opacity:.95; }
 
-/* SERVICES */
 .services-toggle{ font-family:Cinzel, serif; font-size:26px; cursor:pointer; display:inline-flex; align-items:center; gap:12px; }
 #services-arrow { display: inline-block; transition: 0.3s; }
 #services-arrow.open { transform: rotate(180deg); }
@@ -115,12 +129,10 @@ body{
 .subsection{ max-height:0; opacity:0; overflow:hidden; padding: 10px 0; transition: 0.4s ease; font-weight: 300; font-style: italic; line-height: 1.5; color: #ffeedd; }
 .subsection.open{ max-height:4000px; opacity:1; }
 
-/* BUTTONS */
 .buttons{ margin-top:60px; display:flex; flex-direction:column; gap:16px; align-items:center; }
 .btn{ width:100%; max-width:360px; padding:14px 20px; border-radius:40px; text-decoration:none; background:var(--btn-bg); color:var(--btn-text); font-weight:600; display: flex; justify-content: center; transition: .35s; border:1px solid rgba(84,21,24,.25); }
 .btn:hover{ transform:translateY(-3px); background:rgb(248,226,204); }
 
-/* CAROUSEL */
 .carousel-container{ position:relative; width:100%; margin:20px auto; overflow:hidden; border-radius:12px; cursor: grab; touch-action: pan-y; }
 .carousel-track{ display:flex; transition:transform 0.5s ease; }
 .carousel-item{ min-width:100%; user-select: none; }
@@ -129,30 +141,27 @@ body{
 @media(max-width:600px){ .title{font-size:30px} .avatar{width:170px;height:170px} }
 </style>
 </head>
-
 <body>
-
 <canvas id="bg-canvas"></canvas>
-
+<div class="lang-control" onclick="toggleLanguage()">
+  <span id="lang-btn-text">AZ</span>
+</div>
 <div class="music-control" onclick="toggleMusic()">
   <span id="music-icon">🔊</span>
   <audio id="bg-music" loop><source src="music.mp3" type="audio/mpeg"></audio>
 </div>
-
 <main class="container">
   <div class="avatar-area">
     <div class="avatar"><img src="avatar.jpg" alt="Red Tent"></div>
     <div class="light-ray"></div>
   </div>
-
   <h1 class="title">The Red Tent</h1>
-  <div class="subtitle">О Red Tent:</div>
-  <div class="description">
+  <div class="subtitle" data-i18n="subtitle">О Red Tent:</div>
+  <div class="description" data-i18n="description">
     Red Tent — это первая в Азербайджане студия женских практик и саморазвития. Это место, где йога встречается с творчеством и глубокой работой над собой. Мы создали пространство, которое позволяет женщинам полностью раскрыться через самые разные форматы.
     <br><br>
     Red Tent — это не просто студия, это твой личный эпицентр вдохновения, знаний и поддержки в кругу единомышленниц.
   </div>
-
   <div class="divider"></div>
 
   <div class="carousel-container" id="carousel">
@@ -173,14 +182,19 @@ body{
   </div>
 
   <div class="divider"></div>
-  <div class="btn quotes-btn" onclick="showQuote()">Цитаты дня</div>
+  <div class="btn quotes-btn" onclick="showQuote()" data-i18n="quotes_btn">Цитаты дня</div>
   <div class="divider"></div>
 
-  <div class="services-toggle" onclick="toggleServices()">Наши услуги❂ <span id="services-arrow">▼</span></div>
+  <div class="services-toggle" onclick="toggleServices()">
+    <span data-i18n="services_main">Наши услуги</span>❂ <span id="services-arrow">▼</span>
+  </div>
+  
   <div id="services" class="services-list">
     <div class="service-section">
-      <div class="service-title" onclick="toggleSubsection('yoga')">Раздел: Йога <span class="section-arrow">▶</span></div>
-      <div id="yoga" class="subsection">
+      <div class="service-title" onclick="toggleSubsection('yoga')">
+        <span data-i18n="title_yoga">Раздел: Йога</span> <span class="section-arrow">▶</span>
+      </div>
+      <div id="yoga" class="subsection" data-i18n="content_yoga">
         Индивидуальные классы КЙ:<br>
         Для каждого ученика разрабатывается индивидуальная программа занятий, учитывая физическую подготовку и расчёты по тантрической нумерологии. Мы будем практиковать комплексы Кундалини йоги 40 дней, включая домашние задания. За это время укрепляются нервная, эндокринная и дыхательные системы, очищается тело от токсинов и восстанавливается баланс между телом и эмоциями.<br>
         Продолжительность урока: 1 час — 1 час 15 минут.<br>
@@ -191,8 +205,10 @@ body{
     </div>
 
     <div class="service-section">
-      <div class="service-title" onclick="toggleSubsection('astro')">Раздел: Астрология <span class="section-arrow">▶</span></div>
-      <div id="astro" class="subsection">
+      <div class="service-title" onclick="toggleSubsection('astro')">
+        <span data-i18n="title_astro">Раздел: Астрология</span> <span class="section-arrow">▶</span>
+      </div>
+      <div id="astro" class="subsection" data-i18n="content_astro">
         ▫️ Детская астопсихология: 1 ребёнок — 1,5 часа — 130 АЗН<br><br>
         ▫️ Соляр (персональный гороскоп на год):<br>
         Гороскоп на год даёт рекомендации, как провести 12 дней после дня рождения, чтобы весь год был удачным. Это время для того, чтобы стать лучшей версией себя, принять прошлое, насладиться настоящим и смотреть в будущее с надеждой.<br>
@@ -203,8 +219,10 @@ body{
     </div>
 
     <div class="service-section">
-      <div class="service-title" onclick="toggleSubsection('coaching')">Раздел: Коучинг <span class="section-arrow">▶</span></div>
-      <div id="coaching" class="subsection">
+      <div class="service-title" onclick="toggleSubsection('coaching')">
+        <span data-i18n="title_coaching">Раздел: Коучинг</span> <span class="section-arrow">▶</span>
+      </div>
+      <div id="coaching" class="subsection" data-i18n="content_coaching">
         Архетипический портрет личности:<br>
         Индивидуальный портрет, который помогает проанализировать личность, её потенциал, таланты и возможности. Позволяет выявить скрытые страхи и блокировки в подсознании. Также можно определить, в каких условиях человек чувствует себя комфортно, а какие ситуации неприемлемы.<br>
         <em>Цены:</em><br>
@@ -231,8 +249,10 @@ body{
     </div>
 
     <div class="service-section">
-      <div class="service-title" onclick="toggleSubsection('games')">Раздел: Игры <span class="section-arrow">▶</span></div>
-      <div id="games" class="subsection">
+      <div class="service-title" onclick="toggleSubsection('games')">
+        <span data-i18n="title_games">Раздел: Игры</span> <span class="section-arrow">▶</span>
+      </div>
+      <div id="games" class="subsection" data-i18n="content_games">
         ▫️ Игра «Красный Шатер»:<br><br>
         Индивидуально:<br>
         1 этап (любой) — 80 АЗН<br>
@@ -244,9 +264,11 @@ body{
     </div>
 
     <div class="service-section">
-      <div class="service-title" onclick="toggleSubsection('nlp')">Раздел: НЛП <span class="section-arrow">▶</span></div>
-      <div id="nlp" class="subsection">
-        ▫️ Техники избавления от страхов, неправильных установок, ограничивающих убеждений и повторяющихся шаблонов и сценариев — 50 АЗН за 1 технику во время сессии<br><br>
+      <div class="service-title" onclick="toggleSubsection('nlp')">
+        <span data-i18n="title_nlp">Раздел: НЛП</span> <span class="section-arrow">▶</span>
+      </div>
+      <div id="nlp" class="subsection" data-i18n="content_nlp">
+        ▫️ Техники избавления от страхов, неправильных установок, ограничивающих убеждений и повторяющихся шаблонов и сценариев — 50 АЗН за 1 технику во время сессии
       </div>
     </div>
   </div>
@@ -254,101 +276,114 @@ body{
   <div class="divider"></div>
 
   <div class="buttons">
-    <a class="btn" href="https://www.instagram.com/redtent_studio?igsh=ejljM2R5azJ5NTlt" target="_blank">Instagram</a>
-    <a class="btn" href="https://wa.me/994518339556">Связаться с нами</a>
-    <a class="btn" href="https://chat.whatsapp.com/G4g6Q5BJrVh82Z8d2jbRGC">Red Tent Community</a>
+    <a class="btn" href="https://www.instagram.com/redtent_studio" target="_blank">Instagram</a>
+    <a class="btn" href="https://wa.me/994518339556" data-i18n="btn_contact">Связаться с нами</a>
+    <a class="btn" href="https://chat.whatsapp.com/G4g6Q5BJrVh82Z8d2jbRGC" data-i18n="btn_community">Red Tent Community</a>
     <a class="btn" href="https://share.google/De1g1mtdcl34iOU8C">Facebook</a>
   </div>
 </main>
-
 <div id="quote-overlay" class="quote-overlay" onclick="closeQuote()">
   <div class="quote-card" onclick="event.stopPropagation()"><p id="quote-text"></p></div>
 </div>
 
 <script>
-// --- АНИМАЦИЯ АКВАРЕЛИ (УЛУЧШЕННАЯ) ---
-const canvas = document.getElementById('bg-canvas');
-const ctx = canvas.getContext('2d');
-let particles = [];
+// --- ПОЛНЫЙ СЛОВАРЬ ПЕРЕВОДОВ (БЕЗ СОКРАЩЕНИЙ) ---
+const translations = {
+  ru: {
+    subtitle: "О Red Tent:",
+    description: "Red Tent — это первая в Азербайджане студия женских практик и саморазвития. Это место, где йога встречается с творчеством и глубокой работой над собой. Мы создали пространство, которое позволяет женщинам полностью раскрыться через самые разные форматы.<br><br>Red Tent — это не просто студия, это твой личный эпицентр вдохновения, знаний и поддержки в кругу единомышленниц.",
+    quotes_btn: "Цитаты дня",
+    services_main: "Наши услуги",
+    title_yoga: "Раздел: Йога",
+    content_yoga: "Индивидуальные классы КЙ:<br>Для каждого ученика разрабатывается индивидуальная программа занятий, учитывая физическую подготовку и расчёты по тантрической нумерологии. Мы будем практиковать комплексы Кундалини йоги 40 дней, включая домашние задания. За это время укрепляются нервная, эндокринная и дыхательные системы, очищается тело от токсинов и восстанавливается баланс между телом и эмоциями.<br>Продолжительность урока: 1 час — 1 час 15 минут.<br><em>Цены:</em><br>• 1 человек — 300 АЗН<br>• 2 человека — по 200 АЗН",
+    title_astro: "Раздел: Астрология",
+    content_astro: "▫️ Детская астопсихология: 1 ребёнок — 1,5 часа — 130 АЗН<br><br>▫️ Соляр (персональный гороскоп на год):<br>Гороскоп на год даёт рекомендации, как провести 12 дней после дня рождения, чтобы весь год был удачным. Это время для того, чтобы стать лучшей версией себя, принять прошлое, насладиться настоящим и смотреть в будущее с надеждой.<br>Продолжительность: 1,5 часа — 150 АЗН + астро планирование (100 АЗН) - 200 АЗН 2.30 часа<br><br>▫️ Родовой гороскоп: Баресма — Анализ родовой линии, её влияния на вашу жизнь.<br>Продолжительность: 1,5 часа — 150 АЗН",
+    title_coaching: "Раздел: Коучинг",
+    content_coaching: "Архетипический портрет личности:<br>Индивидуальный портрет, который помогает проанализировать личность, её потенциал, таланты и возможности. Позволяет выявить скрытые страхи и блокировки в подсознании. Также можно определить, в каких условиях человек чувствует себя комфортно, а какие ситуации неприемлемы.<br><em>Цены:</em><br>• Архетипический портрет — 150 АЗН<br><br>▫️ Теневой портрет:<br>Теневой портрет раскрывает скрытые аспекты личности, которые человек вытесняет из сознания, часто воспринимая их как негативные или грешные.<br><em>Цены:</em> • Теневой портрет — 150 АЗН<br><br>▫️ Комплексно 2 портрета:<br> (например: кармический+теневой)<br><em>Цены:</em> • 2 портрета — 200 АЗН<br><br>▫️ Комплексно 3 портрета:<br>(кармический+теневой+архетипический)<br><em>Цены:</em> • 3 портрета — 300 АЗН<br><br>▫️ Совместимость с другим человеком:<br>Анализ отношений между людьми, будь то профессиональные, деловые, любовные или семейные. Метод помогает понять, что связывает или разделяет двух людей.<br><em>Цены:</em> • Совместимость — 300 АЗН<br><br>▫️ Арт-терапия:<br>Арт-терапия с использованием рисуночных техник помогает выражать эмоциональное состояние, идеально подходит для работы с детьми, подростками и для проработки отношений родителей и детей.<br><em>Цены:</em> • Индивидуальное занятие — 100 АЗН • Групповое занятие (минимум 4 человека) — 50 АЗН<br><br>▫️ Метафорические карты (индивидуально):<br>Метафорические карты помогают погрузиться в бессознательное, выявить проблемы, переживания, а также разобраться с мечтами и получить ответы на важные вопросы.<br><em>Цены:</em> • 1 человек — 1,5 часа — 80 АЗН",
+    title_games: "Раздел: Игры",
+    content_games: "▫️ Игра «Красный Шатер»:<br><br>Индивидуально:<br>1 этап (любой) — 80 АЗН<br>4 этапа сразу — 200 АЗН<br><br>Групповая игра (3 человека):<br>1 этап (любой) — 130 АЗН за группу<br>4 этапа сразу — 400 АЗН за группу",
+    title_nlp: "Раздел: НЛП",
+    content_nlp: "▫️ Техники избавления от страхов, неправильных установок, ограничивающих убеждений и повторяющихся шаблонов и сценариев — 50 АЗН за 1 технику во время сессии",
+    btn_contact: "Связаться с нами",
+    btn_community: "Red Tent Community"
+  },
+  az: {
+    subtitle: "Red Tent haqqında:",
+    description: "Red Tent — Azərbaycanda qadın praktikaları və özünüinkişaf üzrə ilk studiyadır. Bura yoqa, yaradıcılıq və dərin öz üzərində işin qovuşduğu məkandır. Biz qadınların müxtəlif formatlar vasitəsilə özlərini tam kəşf etmələri üçün bir məkan yaratdıq.<br><br>Red Tent — sadəcə studiya deyil, həmfikir qadınlar əhatəsində sənin şəxsi ilham, bilik və dəstək mərkəzindir.",
+    quotes_btn: "Günün sitatları",
+    services_main: "Xidmətlərimiz",
+    title_yoga: "Bölmə: Yoqa",
+    content_yoga: "KY fərdi dərsləri:<br>Hər bir tələbə üçün fiziki hazırlıq və tantrik numerologiya hesablamaları nəzərə alınmaqla fərdi dərs proqramı hazırlanır. Biz 40 gün ərzində ev tapşırıqları daxil olmaqla Kundalini yoqa komplekslərini tətbiq edəcəyik. Bu müddət ərzində sinir, endokrin və tənəffüs sistemləri güclənir, bədən toksinlərdən təmizlənir və bədən ilə emosiyalar arasında tarazlıq bərpa olunur.<br>Dərs müddəti: 1 saat — 1 saat 15 dəqiqə.<br><em>Qiymətlər:</em><br>• 1 nəfər — 300 AZN<br>• 2 nəfər — hərəsi 200 AZN",
+    title_astro: "Bölmə: Astrologiya",
+    content_astro: "▫️ Uşaq astropsixologiyası: 1 uşaq — 1,5 saat — 130 AZN<br><br>▫️ Solyar (illik fərdi qoroskop):<br>İllik qoroskop ad günündən sonrakı 12 günü necə keçirmək barədə tövsiyələr verir ki, bütün il uğurlu olsun. Bu, özünüzün ən yaxşı versiyası olmaq, keçmişi qəbul etmək və gələcəyə ümidlə baxmaq vaxtıdır.<br>Müddət: 1,5 saat — 150 AZN + astro planlaşdırma (100 AZN) - 200 AZN 2.30 saat<br><br>▫️ Nəsil qoroskopu: Baresma — Nəsil xəttinin və onun həyatınıza təsirinin təhlili.<br>Müddət: 1,5 saat — 150 AZN",
+    title_coaching: "Bölmə: Kouçinq",
+    content_coaching: "Şəxsiyyətin arxetipik portreti:<br>Şəxsiyyəti, onun potensialını, istedad və imkanlarını təhlil etməyə kömək edən fərdi portret. Şüuraltı qorxuları və blokları üzə çıxarmağa imkan verir. Həmçinin insanın hansı şəraitdə özünü rahat hiss etdiyini müəyyənləşdirir.<br><em>Qiymətlər:</em><br>• Arxetipik portret — 150 AZN<br><br>▫️ Kölgə portreti:<br>İnsanın şüurdan kənarlaşdırdığı gizli aspektləri üzə çıxarır.<br><em>Qiymətlər:</em> • Kölgə portreti — 150 AZN<br><br>▫️ Kompleks 2 portret:<br>(məsələn: karmik+kölgə)<br><em>Qiymətlər:</em> • 2 portret — 200 AZN<br><br>▫️ Kompleks 3 portret:<br>(karmik+kölgə+arxetipik)<br><em>Qiymətlər:</em> • 3 portret — 300 AZN<br><br>▫️ Uyğunluq:<br>Peşəkar, iş, sevgi və ya ailə münasibətlərinin təhlili. İki insanı nəyin birləşdirdiyini və ya ayırdığını anlamağa kömək edir.<br><em>Qiymətlər:</em> • Uyğunluq — 300 AZN<br><br>▫️ Art-terapiya:<br>Rəsm texnikaları vasitəsilə emosional vəziyyəti ifadə etməyə kömək edir, uşaqlar və yeniyetmələr üçün idealdır.<br><em>Qiymətlər:</em> • Fərdi dərs — 100 AZN • Qrup dərsi (min. 4 nəfər) — 50 AZN<br><br>▫️ Metaforik kartlar (fərdi):<br>Şüuraltına dalmağa, problemləri üzə çıxarmağa və vacib suallara cavab tapmağa kömək edir.<br><em>Qiymətlər:</em> • 1 nəfər — 1,5 saat — 80 AZN",
+    title_games: "Bölmə: Oyunlar",
+    content_games: "▫️ «Qırmızı Çadır» oyunu:<br><br>Fərdi:<br>1 mərhələ (hər hansı) — 80 AZN<br>4 mərhələ birlikdə — 200 AZN<br><br>Qrup oyunu (3 nəfər):<br>1 mərhələ (hər hansı) — qrup üçün 130 AZN<br>4 mərhələ birlikdə — qrup üçün 400 AZN",
+    title_nlp: "Bölmə: NLP",
+    content_nlp: "▫️ Qorxulardan, yanlış qənaətlərdən və təkrarlanan ssenarilərdən qurtulma texnikaları — seans zamanı 1 texnika üçün 50 AZN",
+    btn_contact: "Bizimlə əlaqə",
+    btn_community: "Red Tent Community"
+  }
+};
 
-function init() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+const allQuotes = {
+  ru: ["Тишина внутри — источник силы.", "Дыхание возвращает тебя к себе.", "Не засыпай ночью - пока не будешь доволен своим днём.","Спокойствие — это тоже действие.", "Сила начинается с мягкости.", "Тело помнит путь к гармонии.", "Замедлись, и мир станет яснее.", "Внутренний мир — твой настоящий дом.", "Каждое дыхание — новый шанс.", "Баланс рождается в тишине.", "Прислушайся к своему телу.", "Спокойный ум — сильное сердце.", "Гармония начинается внутри.", "Женская энергия — это поток.", "Mедитация — разговор с душой.", "В мягкости живёт настоящая сила.", "Слушай сердце, а не шум мира.", "Тишина лечит лучше слов.", "Там, где есть дыхание — есть жизнь.", "Тело — храм твоей энергии.", "Не засыпай ночью - пока не будешь доволен своим днём.", "Внутренний свет всегда рядом.", "Отпусти напряжение — впусти покой.", "Каждый вдох наполняет силой.", "В покое рождается ясность.", "Женская энергия — это глубина.", "Медленность — это осознанность.", "Тело знает дорогу к балансу.", "Гармония начинается с принятия.", "Спокойствие делает мысли ясными.", "Сила приходит через тишину.", "Осознанность — ключ к свободе.", "Внутренний мир сильнее внешнего шума.", "Дыхание соединяет тело и разум.", "Тишина — язык души.", "Энергия течёт там, где есть внимание.", "Присутствие — это настоящая жизнь.", "Замедление — путь к глубине.", "Женская энергия рождает пространство.", "Спокойствие — форма мудрости.", "Тело говорит, если его слушать.", "Покой — это сила без напряжения.", "Mедитация возвращает к себе.", "Внутри тебя больше света, чем ты думаешь.", "Мягкость меняет мир.", "Спокойствие создаёт силу.", "Дыхание открывает пространство.", "Баланс — это искусство чувствовать.", "Слушай своё внутреннее движение.", "В каждом моменте есть тишина.", "Гармония живёт в настоящем.", "Покой — начало всех перемен."],
+  az: ["Daxili sükut — güc mənbəyidir.", "Nəfəs səni özünə qaytarır.", "Gününüzdən razı qalmayana qədər gecə yatmayın.", "Sakitlik — həm də bir hərəkətdir.", "Güc yumşaqlıqdan başlayır.", "Bədən harmoniya yolunu xatırlayır.", "Yavaşla, dünya daha aydın olacaq.", "Daxili aləmin — sənin əsl evindir.", "Hər nəfəs — yeni bir şansdır.", "Tarazlıq sükutda doğulur.", "Bədəninə qulaq as.", "Sakit zəka — güclü ürəkdir.", "Harmoniya daxildən başlayır.", "Qadın enerjisi — bir axındır.", "Meditasiya — ruhla söhbətdir.", "Həqiqi güc yumşaqlıqda yaşayır.", "Dünyanın səsini deyil, ürəyini dinlə.", "Sükut sözlərdən daha yaxşı sağaldır.", "Nəfəs olan yerdə — həyat var.", "Bədən — enerjinin məbədidir.", "Gününüzdən razı qalmayana qədər gecə yatmayın.", "Daxili nurun həmişə yaxındadır.", "Gərginliyi burax — rahatlığı qəbul et.", "Hər nəfəs güclə doldurur.", "Aydınlıq sükutda doğulur.", "Qadın enerjisi — dərinlikdir.", "Yavaşlıq — fərqindəlikdir.", "Bədən tarazlığa gedən yolu bilir.", "Harmoniya qəbul etməklə başlayır.", "Sakitlik fikirləri aydınlaşdırır.", "Güc sükutla gəlir.", "Fərqindəlik — azadlığın açarıdır.", "Daxili aləm xarici səs-küydən daha güclüdür.", "Nəfəs bədəni və zəkanı birləşdirir.", "Sükut — ruhun dilidir.", "Enerji diqqət olan yerə axır.", "Burada olmaq — əsl həyatdır.", "Yavaşlamaq — dərinliyə gedən yoldur.", "Qadın enerjisi məkan yaradır.", "Sakitlik — müdrikliyin bir formasıdır.", "Bədən dinləsən danışar.", "Rahatlıq — gərginliksiz gücdür.", "Meditasiya səni özünə qaytarır.", "Daxilində düşündüyündən daha çox nur var.", "Yumşaqlıq dünyanı dəyişir.", "Sakitlik güc yaradır.", "Nəfəs məkan açır.", "Tarazlıq — hiss etmək sənətidir.", "Daxili hərəkətinə qulaq as.", "Hər anda bir sükut var.", "Harmoniya indiki zamanda yaşayır.", "Rahatlıq — bütün dəyişikliklərin başlanğıcıdır."]
+};
+
+let currentLang = 'ru';
+
+function toggleLanguage() {
+  currentLang = currentLang === 'ru' ? 'az' : 'ru';
+  document.getElementById('lang-btn-text').innerText = currentLang === 'ru' ? 'AZ' : 'RU';
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (translations[currentLang][key]) el.innerHTML = translations[currentLang][key];
+  });
 }
-window.addEventListener('resize', init);
-init();
-
-class Particle {
-  constructor() { this.reset(); }
-  reset() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
-    this.size = Math.random() * 250 + 150; // Увеличили размер пятен
-    this.v = Math.random() * 0.5 + 0.2; // Увеличили скорость
-    this.alpha = 0;
-    this.maxAlpha = Math.random() * 0.25 + 0.05; // Сделали более непрозрачными
-  }
-  update() {
-    this.y -= this.v;
-    if (this.alpha < this.maxAlpha) this.alpha += 0.002;
-    if (this.y < -this.size) this.reset();
-  }
-  draw() {
-    let g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
-    g.addColorStop(0, `rgba(255, 255, 255, ${this.alpha})`); // Яркий белый центр
-    g.addColorStop(1, 'rgba(255, 255, 255, 0)'); // Плавный переход в прозрачный
-    ctx.fillStyle = g;
-    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
-  }
-}
-for(let i=0; i<15; i++) particles.push(new Particle()); // Увеличили количество пятен
-
-function animate() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach(p => { p.update(); p.draw(); });
-  requestAnimationFrame(animate);
-}
-animate();
-
-// --- МУЗЫКА ---
-const music = document.getElementById('bg-music');
-const musicIcon = document.getElementById('music-icon');
-let firstInteraction = false;
-
-function toggleMusic() {
-  firstInteraction = true; 
-  if (music.paused) {
-    music.play();
-    musicIcon.innerText = '🔊';
-  } else {
-    music.pause();
-    musicIcon.innerText = '🔇';
-  }
-}
-
-window.addEventListener('click', () => {
-  if (!firstInteraction && music.paused) {
-    music.play().catch(() => {}); 
-    firstInteraction = true;
-  }
-}, {once: true});
-
-// --- ЦИТАТЫ (ПОЛНЫЙ СПИСОК) ---
-const quotes = ["Тишина внутри — источник силы.", "Дыхание возвращает тебя к себе.", "Не засыпай ночью - пока не будешь доволен своим днём.","Спокойствие — это тоже действие.", "Сила начинается с мягкости.", "Тело помнит путь к гармонии.", "Замедлись, и мир станет яснее.", "Внутренний мир — твой настоящий дом.", "Каждое дыхание — новый шанс.", "Баланс рождается в тишине.", "Прислушайся к своему телу.", "Спокойный ум — сильное сердце.", "Гармония начинается внутри.", "Женская энергия — это поток.", "Mедитация — разговор с душой.", "В мягкости живёт настоящая сила.", "Слушай сердце, а не шум мира.", "Тишина лечит лучше слов.", "Там, где есть дыхание — есть жизнь.", "Тело — храм твоей энергии.", "Не засыпай ночью - пока не будешь доволен своим днём.", "Внутренний свет всегда рядом.", "Отпусти напряжение — впусти покой.", "Каждый вдох наполняет силой.", "В покое рождается ясность.", "Женская энергия — это глубина.", "Медленность — это осознанность.", "Тело знает дорогу к балансу.", "Гармония начинается с принятия.", "Спокойствие делает мысли ясными.", "Сила приходит через тишину.", "Осознанность — ключ к свободе.", "Внутренний мир сильнее внешнего шума.", "Дыхание соединяет тело и разум.", "Тишина — язык души.", "Энергия течёт там, где есть внимание.", "Присутствие — это настоящая жизнь.", "Замедление — путь к глубине.", "Женская энергия рождает пространство.", "Спокойствие — форма мудрости.", "Тело говорит, если его слушать.", "Покой — это сила без напряжения.", "Mедитация возвращает к себе.", "Внутри тебя больше света, чем ты думаешь.", "Мягкость меняет мир.", "Спокойствие создаёт силу.", "Дыхание открывает пространство.", "Баланс — это искусство чувствовать.", "Слушай своё внутреннее движение.", "В каждом моменте есть тишина.", "Гармония живёт в настоящем.", "Покой — начало всех перемен."];
 
 function showQuote() {
-  const rand = Math.floor(Math.random() * quotes.length);
-  document.getElementById('quote-text').innerText = quotes[rand];
+  const list = allQuotes[currentLang];
+  const rand = Math.floor(Math.random() * list.length);
+  document.getElementById('quote-text').innerText = list[rand];
   document.getElementById('quote-overlay').style.display = 'flex';
 }
 function closeQuote() { document.getElementById('quote-overlay').style.display = 'none'; }
 
-// --- УСЛУГИ ---
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+function init() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+window.addEventListener('resize', init);
+init();
+class Particle {
+  constructor() { this.reset(); }
+  reset() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 250 + 150; this.v = Math.random() * 0.5 + 0.2; this.alpha = 0; this.maxAlpha = Math.random() * 0.25 + 0.05; }
+  update() { this.y -= this.v; if (this.alpha < this.maxAlpha) this.alpha += 0.002; if (this.y < -this.size) this.reset(); }
+  draw() {
+    let g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+    g.addColorStop(0, `rgba(255, 255, 255, ${this.alpha})`); g.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
+  }
+}
+for(let i=0; i<15; i++) particles.push(new Particle());
+function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }
+animate();
+
+const music = document.getElementById('bg-music');
+const musicIcon = document.getElementById('music-icon');
+let firstInteraction = false;
+function toggleMusic() {
+  firstInteraction = true; 
+  if (music.paused) { music.play(); musicIcon.innerText = '🔊'; } else { music.pause(); musicIcon.innerText = '🔇'; }
+}
+window.addEventListener('click', () => { if (!firstInteraction && music.paused) { music.play().catch(() => {}); firstInteraction = true; } }, {once: true});
+
 function toggleServices(){
   const list = document.getElementById('services');
   const arrow = document.getElementById('services-arrow');
-  list.classList.toggle('open');
-  arrow.classList.toggle('open');
+  list.classList.toggle('open'); arrow.classList.toggle('open');
 }
 function toggleSubsection(id){
   const el = document.getElementById(id);
@@ -356,53 +391,22 @@ function toggleSubsection(id){
   const isOpen = el.classList.contains('open');
   document.querySelectorAll('.subsection').forEach(s => s.classList.remove('open'));
   document.querySelectorAll('.section-arrow').forEach(a => a.style.transform = 'rotate(0deg)');
-  if(!isOpen) {
-    el.classList.add('open');
-    arrow.style.transform = 'rotate(90deg)';
-  }
+  if(!isOpen) { el.classList.add('open'); arrow.style.transform = 'rotate(90deg)'; }
 }
 
-// --- КАРУСЕЛЬ (СВАЙП + МЫШЬ + АВТО) ---
 const track = document.getElementById('track'), container = document.getElementById('carousel'), items = document.querySelectorAll('.carousel-item');
 let idx = 1, startX = 0, isDragging = false, interval = setInterval(next, 3000);
-
 function update() { track.style.transform = `translateX(-${idx * 100}%)`; }
 function next() { idx++; track.style.transition = 'transform 0.5s ease'; update(); }
-
 track.addEventListener('transitionend', () => {
   if (idx >= items.length - 1) { idx = 1; track.style.transition = 'none'; update(); }
   if (idx <= 0) { idx = items.length - 2; track.style.transition = 'none'; update(); }
 });
-
-const start = (e) => {
-  clearInterval(interval);
-  isDragging = true;
-  startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
-  track.style.transition = 'none';
-};
-const move = (e) => {
-  if(!isDragging) return;
-  let x = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
-  let diff = x - startX;
-  track.style.transform = `translateX(calc(-${idx * 100}% + ${(diff/container.offsetWidth)*100}%))`;
-};
-const end = (e) => {
-  if(!isDragging) return;
-  isDragging = false;
-  let x = e.type.includes('mouse') ? e.pageX : e.changedTouches[0].clientX;
-  let diff = x - startX;
-  if(Math.abs(diff) > 50) diff > 0 ? idx-- : idx++;
-  track.style.transition = '0.5s ease'; update();
-  interval = setInterval(next, 3000);
-};
-
-container.addEventListener('mousedown', start);
-container.addEventListener('mousemove', move);
-window.addEventListener('mouseup', end);
-container.addEventListener('touchstart', start);
-container.addEventListener('touchmove', move);
-container.addEventListener('touchend', end);
-
+const start = (e) => { clearInterval(interval); isDragging = true; startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX; track.style.transition = 'none'; };
+const move = (e) => { if(!isDragging) return; let x = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX; let diff = x - startX; track.style.transform = `translateX(calc(-${idx * 100}% + ${(diff/container.offsetWidth)*100}%))`; };
+const end = (e) => { if(!isDragging) return; isDragging = false; let x = e.type.includes('mouse') ? e.pageX : e.changedTouches[0].clientX; let diff = x - startX; if(Math.abs(diff) > 50) diff > 0 ? idx-- : idx++; track.style.transition = '0.5s ease'; update(); interval = setInterval(next, 3000); };
+container.addEventListener('mousedown', start); container.addEventListener('mousemove', move); window.addEventListener('mouseup', end);
+container.addEventListener('touchstart', start); container.addEventListener('touchmove', move); container.addEventListener('touchend', end);
 update();
 </script>
 </body>
